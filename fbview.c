@@ -13,7 +13,7 @@
 int main(int argc, char *argv[])
 {
     char fb_path[64] = DEFAULT_FB_PATH; // Reserve enough space
-    
+
     if (argc >= 2) {
         if (strncmp(argv[1], "/dev/", 5) == 0) {
             // Full path provided (e.g., /dev/fb1)
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
         // No arguments, use default
         strcat(fb_path, DEFAULT_FB_ID);
     }
-    
+
     printf("Opening device: %s\n", fb_path);
 
     int fb = open(fb_path, O_RDWR);
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     // Extract fb ID for display
     const char *fb_id = strrchr(fb_path, 'b');
     fb_id = fb_id ? fb_id + 1 : "?";
-    
+
     printf("fb%s %dx%d, %d bpp\n", fb_id, width, height, bpp);
 
     size_t fb_size = width * height * bytes_per_pixel;
@@ -120,6 +120,8 @@ int main(int argc, char *argv[])
 
     SDL_RenderSetLogicalSize(renderer, width, height); // Adaptive logical size!
 
+    int is_fullscreen = 0; // Track fullscreen state
+
     while (1) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
@@ -137,6 +139,17 @@ int main(int argc, char *argv[])
                     if (scale < 1) scale = 1;
                     SDL_SetWindowSize(win, width * scale, height * scale);
                     printf("Scale: %dx\n", scale);
+                }
+                if (e.key.keysym.sym == SDLK_f) {
+                    is_fullscreen = !is_fullscreen;
+                    if (is_fullscreen) {
+                        SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+                        printf("Entered fullscreen mode\n");
+                    } else {
+                        SDL_SetWindowFullscreen(win, 0);
+                        SDL_SetWindowSize(win, width * scale, height * scale);
+                        printf("Exited fullscreen mode\n");
+                    }
                 }
             }
         }

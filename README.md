@@ -32,9 +32,10 @@ make
 
 - `+` / `=`: Increase scaling
 - `-`: Decrease scaling
+- `F`: Toggle fullscreen mode
 - Close window to exit
 
 ## Requirements
 
 - SDL2 library
-- Linux with framebuffer devices 
+- Linux with framebuffer devices
